@@ -19,14 +19,36 @@ class NegociacaoController {
             new MensagemView($('#mensagemView')),
             'texto'
         );
+
+        ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.selectAll())
+            .then(negociacoes =>
+                negociacoes.forEach(negociacao =>
+                    this._listaNegociacoes.add(negociacao)))
+            .catch(err => this._mensagem.texto = err);
     }
     
     add(event){
-        
+
         event.preventDefault();
-        this._listaNegociacoes.add(this._createNegociacao());
-        this._mensagem.texto = 'Negociação inserida com sucesso!';
-        this._resetForm();
+
+        ConnectionFactory
+            .getConnection()
+            .then(connection => {
+
+                let negociacao = this._createNegociacao();
+
+                new NegociacaoDao(connection)
+                    .insert(negociacao)
+                    .then(() => {
+                        this._listaNegociacoes.add(negociacao);
+                        this._mensagem.texto = 'Negociação inserida com sucesso!';
+                        this._resetForm();
+                    })
+            })
+            .catch(err => this._mensagem.texto = err);
     }
 
     import(){
@@ -49,16 +71,23 @@ class NegociacaoController {
 
     empty(){
 
-        this._listaNegociacoes.empty();
-        this._mensagem.texto = 'Negociações apagadas com sucesso';
+        ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.deleteAll())
+            .then(mensagem => {
+                this._listaNegociacoes.empty();
+                this._mensagem.texto = mensagem
+            })
+            .catch(err => this._mensagem.texto = err);
     }
     
     _createNegociacao(){
 
         return new Negociacao(
             DateHelper.stringToDate(this._inputData.value),
-            this._inputQuantidade.value,
-            this._inputValor.value
+            parseInt(this._inputQuantidade.value),
+            parseFloat(this._inputValor.value)
         );
     }
     
