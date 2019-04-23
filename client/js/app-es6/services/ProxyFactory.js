@@ -1,12 +1,12 @@
-class ProxyFactory {
+export class ProxyFactory {
 
-    static create(object, props, action){
+    static create(object, props, action) {
 
         return new Proxy(object, {
 
             get(target, prop, receiver) {
 
-                if(props.includes(prop) && ProxyFactory._isFunction(target[prop])){
+                if (props.includes(prop) && ProxyFactory._isFunction(target[prop])) {
                     return function () {
 
                         console.log(`Interceptando '${prop}'.`);
@@ -20,7 +20,7 @@ class ProxyFactory {
 
             set(target, prop, value, receiver) {
 
-                if(props.includes(prop)){
+                if (props.includes(prop)) {
                     target[prop] = value;
                     action(target);
                 }
@@ -29,7 +29,7 @@ class ProxyFactory {
         });
     }
 
-    static _isFunction(func){
+    static _isFunction(func) {
         return typeof func == 'function';
     }
 }

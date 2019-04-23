@@ -1,6 +1,8 @@
-class Bind {
+import { ProxyFactory } from '../services/ProxyFactory';
 
-    constructor(model, view, ...props){
+export class Bind {
+
+    constructor(model, view, ...props) {
 
         let proxy = ProxyFactory.create(model, props, model => view.update(model));
         view.update(model);

@@ -1,12 +1,14 @@
-class NegociacaoDao {
+import { Negociacao } from '../models/Negociacao';
 
-    constructor(connection){
+export class NegociacaoDao {
+
+    constructor(connection) {
 
         this._conn = connection;
         this._store = 'negociacoes';
     }
 
-    insert(negociacao){
+    insert(negociacao) {
 
         return new Promise((resolve, reject) => {
 
@@ -34,13 +36,13 @@ class NegociacaoDao {
 
                 let current = e.target.result;
 
-                if(current){
+                if (current) {
 
                     let negociacao = current.value;
                     negociacoes.push(new Negociacao(negociacao._data, negociacao._quantidade, negociacao._valor));
 
                     current.continue();
-                }else{
+                } else {
 
                     resolve(negociacoes);
                 }
@@ -54,7 +56,7 @@ class NegociacaoDao {
         });
     }
 
-    deleteAll(){
+    deleteAll() {
 
         return new Promise((resolve, reject) => {
 

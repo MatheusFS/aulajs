@@ -1,7 +1,10 @@
-class NegociacoesView extends View {
-    
-    template(model){
-        
+import { View } from './View';
+import { DateHelper } from '../helpers/DateHelper';
+
+export class NegociacoesView extends View {
+
+    template(model) {
+
         return `
 
         <table class="table table-hover table-bordered">
@@ -15,7 +18,7 @@ class NegociacoesView extends View {
             </thead>
 
             <tbody>
-                ${model.negociacoes.map( n => `
+                ${model.negociacoes.map(n => `
 
                     <tr>
                         <td>${DateHelper.dateToString(n.data)}</td>

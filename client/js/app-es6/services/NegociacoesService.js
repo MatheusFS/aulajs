@@ -1,12 +1,17 @@
-class NegociacoesService {
+import { HttpService } from './HttpService';
+import { ConnectionFactory } from './ConnectionFactory';
+import { NegociacaoDao } from '../dao/NegociacaoDao';
+import { Negociacao } from '../models/Negociacao';
 
-    constructor(){
+export class NegociacoesService {
+
+    constructor() {
 
         this._http = new HttpService();
     }
 
 
-    getNegociacoesSemana(){
+    getNegociacoesSemana() {
 
         return new Promise((resolve, reject) => {
             this._http.get('negociacoes/semana')
@@ -19,7 +24,7 @@ class NegociacoesService {
                 })
         })
     }
-    getNegociacoesSemanaAnterior(){
+    getNegociacoesSemanaAnterior() {
 
         return new Promise((resolve, reject) => {
             this._http.get('negociacoes/anterior')
@@ -32,7 +37,7 @@ class NegociacoesService {
                 })
         })
     }
-    getNegociacoesSemanaRetrasada(){
+    getNegociacoesSemanaRetrasada() {
 
         return new Promise((resolve, reject) => {
             this._http.get('negociacoes/retrasada')
@@ -46,14 +51,14 @@ class NegociacoesService {
         })
     }
 
-    getNegociacoes(){
+    getNegociacoes() {
 
         return Promise.all([
             this.getNegociacoesSemana(),
             this.getNegociacoesSemanaAnterior(),
             this.getNegociacoesSemanaRetrasada()
         ])
-            .then(periodos =>{
+            .then(periodos => {
 
                 let negociacoes = periodos
                     .reduce((uniqueArray, array) => uniqueArray.concat(array), [])
@@ -66,7 +71,7 @@ class NegociacoesService {
             });
     }
 
-    insert(negociacao){
+    insert(negociacao) {
 
         return ConnectionFactory
             .getConnection()
@@ -79,7 +84,7 @@ class NegociacoesService {
             });
     }
 
-    render(){
+    render() {
 
         return ConnectionFactory
             .getConnection()
@@ -91,20 +96,20 @@ class NegociacoesService {
             });
     }
 
-    empty(){
+    empty() {
 
         return ConnectionFactory
-        .getConnection()
-        .then(connection => new NegociacaoDao(connection))
-        .then(dao => dao.deleteAll())
-        .then(() => 'Lista negociações limpa!')
-        .catch(err => {
-            console.log(err);
-            throw new Error('Não foi possível limpar a lista de negociações')
-        });
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.deleteAll())
+            .then(() => 'Lista negociações limpa!')
+            .catch(err => {
+                console.log(err);
+                throw new Error('Não foi possível limpar a lista de negociações')
+            });
     }
 
-    import(listaNegociacoes){
+    import(listaNegociacoes) {
 
         return this.getNegociacoes()
             .then(negociacoes =>
